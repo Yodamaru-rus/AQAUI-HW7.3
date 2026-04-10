@@ -1,0 +1,15 @@
+{
+  "name": "hw7.3",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Roman V",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cypress": "^15.13.1"
+  }
+}
