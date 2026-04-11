@@ -1,4 +1,5 @@
 describe('user API tests', () =>{
+    let userId;
     it('createUser', ()=>{
         cy.request({
             method: "POST",
@@ -14,43 +15,52 @@ describe('user API tests', () =>{
         })
     });
 
-    it('createUser', ()=>{
+    it('ChangeUser', ()=>{
         cy.request({
+            method: "POST",
+            url: "http://localhost:8080/users/",
+            body: {
+                "id": 0,
+                "firstName": "Тест",
+                "surName": "Тестов"
+            }
+        }).then((response) =>{
+            expect(response.status).to.equal(200);
+            userId = response.body.id;
+            return cy.request({
             method: "PUT",
-            url: "http://localhost:8080/users/0",
-            headers: { 'Content-Type': 'application/json' },
-            body: {    
-                id: 0,
+            url: `http://localhost:8080/users/${userId}`,
+            body: {
+                id: userId,
                 firstName: "Имя 0",
                 surName: "Фамилия 0"
-            },
-            failOnStatusCode: false
-        }).then((response) =>{
+            }
+        })}).then((response) =>{
             cy.log('Status:', response.status);
             // cy.log('Body:', JSON.stringify(response.body));
             expect(response.status).to.equal(200);
-            expect(response.body.firstName).to.equal("34");
+            expect(response.body.firstName).to.equal("Имя 0");
         })
     });
     
-    it('createUser', ()=>{
+    it('createAndDeleteUser', ()=>{
         cy.request({
+            method: "POST",
+            url: "http://localhost:8080/users/",
+            body: {
+            "id": 0,
+            "firstName": "Тест2",
+            "surName": "Тестов2"
+            }
+        }).then((response) =>{
+            expect(response.status).to.equal(200);
+            userId = response.body.id;
+            return cy.request({
             method: "DELETE",
-            url: "http://localhost:8080/users/10",
+            url: `http://localhost:8080/users/${userId}`,
             failOnStatusCode: false
-        }).then((response) =>{
-            expect(response.status).to.equal(200);
-        })
-    });
-
-    it('createUser', ()=>{
-        cy.request({
-            method: "GET",
-            url: "http://localhost:8080/users/0",
-            failOnStatusCode: false
-        }).then((response) =>{
-            cy.log('Body:', JSON.stringify(response.body));
-            expect(response.status).to.equal(200);
-        })
+            }).then((response) =>{
+                expect(response.status).to.equal(200);
+        })});
     });
 })
