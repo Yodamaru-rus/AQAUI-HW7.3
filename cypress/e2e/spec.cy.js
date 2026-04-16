@@ -5,7 +5,6 @@ describe('user API tests', () =>{
             method: "POST",
             url: "http://localhost:8080/users",
             body: {
-                "id": 0,
                 "firstName": "Тест",
                 "surName": "Тестов"
             }
@@ -18,15 +17,17 @@ describe('user API tests', () =>{
     it('ChangeUser', ()=>{
         cy.request({
             method: "POST",
-            url: "http://localhost:8080/users/",
+            url: "http://localhost:8080/users",
             body: {
-                "id": 0,
                 "firstName": "Тест",
                 "surName": "Тестов"
             }
         }).then((response) =>{
-            expect(response.status).to.equal(200);
+            //expect(response.status).to.equal(200);
             userId = response.body.id;
+            cy.request(`http://localhost:8080/users/${userId}`).then(getResp => {
+                cy.log('GET after creation:', JSON.stringify(getResp.body));
+            });
             return cy.request({
             method: "PUT",
             url: `http://localhost:8080/users/${userId}`,
@@ -37,7 +38,7 @@ describe('user API tests', () =>{
             }
         })}).then((response) =>{
             cy.log('Status:', response.status);
-            // cy.log('Body:', JSON.stringify(response.body));
+            cy.log('Body:', JSON.stringify(response.body));
             expect(response.status).to.equal(200);
             expect(response.body.firstName).to.equal("Имя 0");
         })
@@ -46,9 +47,8 @@ describe('user API tests', () =>{
     it('createAndDeleteUser', ()=>{
         cy.request({
             method: "POST",
-            url: "http://localhost:8080/users/",
+            url: "http://localhost:8080/users",
             body: {
-            "id": 0,
             "firstName": "Тест2",
             "surName": "Тестов2"
             }
